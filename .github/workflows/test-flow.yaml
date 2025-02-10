@@ -21,7 +21,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.x]
+        node-version: [22.x]
 
     steps:
       - uses: actions/checkout@v4
@@ -63,56 +63,43 @@ jobs:
         run: |
           npm run bundle
 
-  # TODO: integration tests - write a set of commander based bin scripts that you can configure.
-  # The following is an example
-  # private-int-test:
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     contents: write
-  #     pull-requests: write
-  #   steps:
-  #     # Create git client with PAT that has access to the private template
-  #     - uses: actions/checkout@v4
-  #       with:
-  #         token: ${{ secrets.PRIVATE_TEMPLATE_TEST_PAT }}
-  #     - name: setup git
-  #       run: |
-  #         git config user.name github-actions
-  #         git config user.email github-actions@github.com
-  #     - name: install
-  #       run: |
-  #         npm ci
-  #     - name: bundle
-  #       run: |
-  #         npm run bundle
-  #     - name: sync-private-repo
-  #       id: test_run
-  #       uses: ./
-  #       with:
-  #         repoPath: HanseltimeIndustries/test-private-template
-  #         githubToken: ${{ secrets.GITHUB_TOKEN }}
-  #         remoteRepoToken: ${{ secrets.PRIVATE_TEMPLATE_TEST_PAT }}
-  #         templateBranch: main
-  #         commitMsg: "build(boilerplate): synchronize template repo"
-  #         branchPrefix: ${{ inputs.templatePrefix }}
-  #     - name: assert
-  #       run: |
-  #         npx ts-node src/test-utils/confirm-repo-template.ts \
-  #           --expectedPullNumber "${{ steps.test_run.outputs.prNumber }}" \
-  #           --expectedToBranch "main" \
-  #           --expectedFromBranch "main" \
-  #           --expectedFilesChanged "new_file.md" "package.json" "templatesync.json" "templatesync.local.json" \
-  #           --expectedFromRepoPath "HanseltimeIndustries/test-private-template" \
-  #           --expectedBranchPrefix "${{ inputs.templatePrefix }}"
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #     - name: clean
-  #       if: always()
-  #       run: |
-  #         npx ts-node src/test-utils/clear-int-test-resources.ts \
-  #           --expectedPullNumber "${{ steps.test_run.outputs.prNumber }}" \
-  #           --expectedFromBranch "main" \
-  #           --expectedFromRepoPath "HanseltimeIndustries/test-private-template" \
-  #           --expectedBranchPrefix "${{ inputs.templatePrefix }}"
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  int-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [22.x]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: corepack
+        run: |
+          corepack enable
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: package-lock.json
+
+      - name: install
+        run: |
+          npm ci
+      - name: bundle
+        run: |
+          npm run bundle
+
+      - id: files
+        name: Run the action
+        uses: ./
+
+      # TODO: caching this action would accelerate the run
+      - name: Print steps context output
+        run: |
+          echo 'steps.files.outputs.all=${{ steps.files.outputs.all }}'
+          echo 'steps.files.outputs.added=${{ steps.files.outputs.added }}'
+          echo 'steps.files.outputs.modified=${{ steps.files.outputs.modified }}'
+          echo 'steps.files.outputs.removed=${{ steps.files.outputs.removed }}'
+          echo 'steps.files.outputs.renamed=${{ steps.files.outputs.renamed }}'
+          echo 'steps.files.outputs.added_modified=${{ steps.files.outputs.added_modified }}'
