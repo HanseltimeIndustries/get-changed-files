@@ -50,7 +50,8 @@ jobs:
           else
             echo "Setting up git environment for commitlint of branch push"
             git fetch origin ${{ github.ref_name }} --unshallow
-            npx commitlint --from $(git rev-list --max-parents=0 origin/${{ github.ref_name }})
+            # We limit to this commit since the earlier commits weren't being linted
+            npx commitlint --from 5b2bd81ef9363f80b8875e82e77cfad764d53b27
           fi
       - name: build
         run: |
