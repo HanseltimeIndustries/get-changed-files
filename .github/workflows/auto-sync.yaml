@@ -28,5 +28,5 @@ jobs:
         with:
           repoPath: HanseltimeIndustries/github-actions-template
           githubToken: ${{ secrets.SYNC_TOKEN }}
-          templateBranch: main
+          templateBranch: master
           commitMsg: "build(boilerplate): synchronize template repo"

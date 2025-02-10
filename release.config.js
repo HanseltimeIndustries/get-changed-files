@@ -14,7 +14,7 @@ const abbreviatedName = fullName.substring(
 );
 
 module.exports = {
-	branches: ["main", { name: "alpha", prerelease: true }],
+	branches: ["master", { name: "alpha", prerelease: true }],
 	plugins: [
 		"@semantic-release/commit-analyzer",
 		"@semantic-release/release-notes-generator",
