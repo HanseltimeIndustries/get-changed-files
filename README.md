@@ -4,13 +4,33 @@
 
 # Get All Changed Files
 
-(This is the spiritual successor to https://github.com/jitterbit/get-changed-files which is unmaintained.  This was resurrected to avoid the cost
-of other `git` cli based actions, since a misconfigured checkout means we could get different results)
-
 Get all of the files changed/modified in a pull request or push's commits.
-You can choose to get all changed files, only added files, only modified files, only removed files, only renamed files, or all added and modified files.
+You can get outputs for all changed files total, added files, modified files, removed files, renamed files, or all added + modified files.
+You can also choose to only look for changes matching certain file patterns of interest.
 These outputs are available via the `steps` output context.
 The `steps` output context exposes the output names `all`, `added`, `modified`, `removed`, `renamed`, and `added_modified`.
+
+## What's different between other actions?
+
+This action is meant to not rely on a correctly configured `git` client (which is mainly what I found).  
+This action doesn't even require a `checkout` to run since it only uses github event context and the github compare API.  This also means that fork pull requests are also supported!
+
+Additionally, this is the spiritual successor to https://github.com/jitterbit/get-changed-files, which had the same aims but has not been kept up to date with APIS.  You can consider this a replacement for that action if you already liked it in your workflows.
+
+- [Get All Changed Files](#get-all-changed-files)
+  - [What's different between other actions?](#whats-different-between-other-actions)
+- [Usage](#usage)
+  - [Arguments](#arguments)
+    - [format](#format)
+    - [filter](#filter)
+  - [Permissions](#permissions)
+- [Scenarios](#scenarios)
+  - [Get all changed files as space-delimited](#get-all-changed-files-as-space-delimited)
+  - [Get all added and modified files as CSV](#get-all-added-and-modified-files-as-csv)
+  - [Get all removed files as JSON](#get-all-removed-files-as-json)
+- [License](#license)
+- [Development](#development)
+<!-- created with markdown all in one Vscode extension -->
 
 # Usage
 
@@ -23,7 +43,28 @@ See [action.yml](action.yml)
     # Can be 'space-delimited', 'csv', or 'json'.
     # Default: 'space-delimited'
     format: ''
+    filter: 'site/**,bundle/**'
 ```
+
+## Arguments
+
+### format
+
+This argument dictates how each of the output strings are written
+
+| format | description |
+| ------ | ----------- |
+| space-delimited (default) | `file.txt file2.txt` |
+| csv    | `file.txt,file2.txt` |
+| json | `[ "file.txt", "file2.txt" ]` |
+
+### filter
+
+This argument will filter the output of files to only those that match the set of provided [minimatch globs](https://github.com/isaacs/minimatch).  It this is not provided, then all changed files are provided.
+
+Example:  `sites/**/*,bundle/**/*`
+
+The above configuration is only returning changed files in the `sites/` and `bundle/` folder.
 
 ## Permissions
 
@@ -36,16 +77,6 @@ permissions:
 ```
 
 # Scenarios
-
-- [Get All Changed Files](#get-all-changed-files)
-- [Usage](#usage)
-  - [Permissions](#permissions)
-- [Scenarios](#scenarios)
-  - [Get all changed files as space-delimited](#get-all-changed-files-as-space-delimited)
-  - [Get all added and modified files as CSV](#get-all-added-and-modified-files-as-csv)
-  - [Get all removed files as JSON](#get-all-removed-files-as-json)
-- [License](#license)
-- [Development](#development)
 
 ## Get all changed files as space-delimited
 

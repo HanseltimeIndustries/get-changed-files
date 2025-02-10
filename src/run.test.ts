@@ -1,11 +1,10 @@
-import { setFailed, setOutput, getInput } from "@actions/core";
-import { run } from "./run";
+import { setFailed, setOutput } from "@actions/core";
+import { Format, run } from "./run";
 
 jest.mock("@actions/core");
 
 const mockSetFailed = jest.mocked(setFailed);
 const mockSetOutput = jest.mocked(setOutput);
-const mockGetInput = jest.mocked(getInput);
 const mockCompareCommitsWithBaseHead = jest.fn();
 
 const baseContext = {
@@ -52,17 +51,11 @@ beforeEach(() => {
 });
 
 it("setsFailed if the format is not accounted for", async () => {
-	mockGetInput.mockImplementation((token) => {
-		if (token === "token") {
-			return "someToken";
-		}
-		if (token === "format") {
-			return "unsupported format";
-		}
-		throw new Error("Unexpected getInput token " + token);
-	});
+	const opts = {
+		format: "unsupported format" as any,
+	};
 
-	await run({} as any, mockOctoKit as any);
+	await run({} as any, mockOctoKit as any, opts);
 
 	expect(mockSetFailed).toHaveBeenCalledWith(
 		`Format must be one of 'string-delimited', 'csv', or 'json', got 'unsupported format'.`,
@@ -71,15 +64,9 @@ it("setsFailed if the format is not accounted for", async () => {
 });
 
 it("setsFailed if the event is not accounted for", async () => {
-	mockGetInput.mockImplementation((token) => {
-		if (token === "token") {
-			return "someToken";
-		}
-		if (token === "format") {
-			return "json";
-		}
-		throw new Error("Unexpected getInput token " + token);
-	});
+	const opts = {
+		format: "json" as any,
+	};
 
 	await run(
 		{
@@ -88,6 +75,7 @@ it("setsFailed if the event is not accounted for", async () => {
 			payload: {}, // required since we serialize this for debug
 		} as any,
 		mockOctoKit as any,
+		opts,
 	);
 
 	expect(mockSetFailed).toHaveBeenCalledWith(
@@ -97,15 +85,9 @@ it("setsFailed if the event is not accounted for", async () => {
 });
 
 it("setsFailed if it can't determine head and base sha's", async () => {
-	mockGetInput.mockImplementation((token) => {
-		if (token === "token") {
-			return "someToken";
-		}
-		if (token === "format") {
-			return "json";
-		}
-		throw new Error("Unexpected getInput token " + token);
-	});
+	const opts = {
+		format: "json" as any,
+	};
 
 	await run(
 		{
@@ -117,6 +99,7 @@ it("setsFailed if it can't determine head and base sha's", async () => {
 			}, // required since we serialize this for debug
 		} as any,
 		mockOctoKit as any,
+		opts,
 	);
 
 	expect(mockSetFailed).toHaveBeenCalledWith(
@@ -127,15 +110,9 @@ it("setsFailed if it can't determine head and base sha's", async () => {
 });
 
 it("setsFailed if the response if not 200", async () => {
-	mockGetInput.mockImplementation((token) => {
-		if (token === "token") {
-			return "someToken";
-		}
-		if (token === "format") {
-			return "json";
-		}
-		throw new Error("Unexpected getInput token " + token);
-	});
+	const opts = {
+		format: "json" as any,
+	};
 
 	mockCompareCommitsWithBaseHead.mockResolvedValue({
 		status: 401,
@@ -152,6 +129,7 @@ it("setsFailed if the response if not 200", async () => {
 			}, // required since we serialize this for debug
 		} as any,
 		mockOctoKit as any,
+		opts,
 	);
 
 	expect(mockSetFailed).toHaveBeenCalledWith(
@@ -163,15 +141,9 @@ it("setsFailed if the response if not 200", async () => {
 it.each([["diverged"], ["behind"], ["identical"]])(
 	"setsFailed if the response if the head is not ahead of the base (%s)",
 	async (status) => {
-		mockGetInput.mockImplementation((token) => {
-			if (token === "token") {
-				return "someToken";
-			}
-			if (token === "format") {
-				return "json";
-			}
-			throw new Error("Unexpected getInput token " + token);
-		});
+		const opts = {
+			format: "json" as any,
+		};
 
 		mockCompareCommitsWithBaseHead.mockResolvedValue({
 			status: 200,
@@ -190,6 +162,7 @@ it.each([["diverged"], ["behind"], ["identical"]])(
 				}, // required since we serialize this for debug
 			} as any,
 			mockOctoKit as any,
+			opts,
 		);
 
 		expect(mockSetFailed).toHaveBeenCalledWith(
@@ -201,15 +174,9 @@ it.each([["diverged"], ["behind"], ["identical"]])(
 );
 
 it("setsFailed if the a file has a space in its name and is space-delimited output", async () => {
-	mockGetInput.mockImplementation((token) => {
-		if (token === "token") {
-			return "someToken";
-		}
-		if (token === "format") {
-			return "space-delimited";
-		}
-		throw new Error("Unexpected getInput token " + token);
-	});
+	const opts = {
+		format: "space-delimited" as any,
+	};
 
 	mockCompareCommitsWithBaseHead.mockResolvedValue({
 		status: 200,
@@ -242,6 +209,7 @@ it("setsFailed if the a file has a space in its name and is space-delimited outp
 			}, // required since we serialize this for debug
 		} as any,
 		mockOctoKit as any,
+		opts,
 	);
 
 	expect(mockSetFailed).toHaveBeenCalledWith(
@@ -252,15 +220,9 @@ it("setsFailed if the a file has a space in its name and is space-delimited outp
 });
 
 it("setsFailed if the a file has an unexpected status", async () => {
-	mockGetInput.mockImplementation((token) => {
-		if (token === "token") {
-			return "someToken";
-		}
-		if (token === "format") {
-			return "space-delimited";
-		}
-		throw new Error("Unexpected getInput token " + token);
-	});
+	const opts = {
+		format: "space-delimited" as any,
+	};
 
 	mockCompareCommitsWithBaseHead.mockResolvedValue({
 		status: 200,
@@ -293,6 +255,7 @@ it("setsFailed if the a file has an unexpected status", async () => {
 			}, // required since we serialize this for debug
 		} as any,
 		mockOctoKit as any,
+		opts,
 	);
 
 	expect(mockSetFailed).toHaveBeenCalledWith(
@@ -364,15 +327,9 @@ it.each(
 )(
 	"delivers the results for format %s and event %s (forked: %s)",
 	async (format, eventName, _forked, expBasename, payload, expTransform) => {
-		mockGetInput.mockImplementation((token) => {
-			if (token === "token") {
-				return "someToken";
-			}
-			if (token === "format") {
-				return format;
-			}
-			throw new Error("Unexpected getInput token " + token);
-		});
+		const opts = {
+			format: format as any,
+		};
 		// There's an error test for space-delimited
 		const spacedelimitedFiles =
 			format !== "space-delimited"
@@ -417,6 +374,7 @@ it.each(
 				payload, // required since we serialize this for debug
 			} as any,
 			mockOctoKit as any,
+			opts,
 		);
 
 		expect(mockCompareCommitsWithBaseHead).toHaveBeenCalledWith({
@@ -473,3 +431,66 @@ it.each(
 		);
 	},
 );
+
+it("filters the results to match the globs", async () => {
+	const opts = {
+		format: "space-delimited" as Format,
+		filter: "dir/**, **/*.inc",
+	};
+	const files = [
+		{
+			filename: "file.txt",
+			status: "modified",
+		},
+		{
+			filename: "dir/file2.txt",
+			status: "renamed",
+		},
+		{
+			filename: "addedFile",
+			status: "added",
+		},
+		{
+			filename: "removedFile.inc",
+			status: "removed",
+		},
+	];
+	mockCompareCommitsWithBaseHead.mockResolvedValue({
+		status: 200,
+		data: {
+			status: "ahead",
+			files,
+		},
+	});
+
+	await run(
+		{
+			...baseContext,
+			eventName: "push",
+			payload: mockPushPayload, // required since we serialize this for debug
+		} as any,
+		mockOctoKit as any,
+		opts,
+	);
+
+	expect(mockCompareCommitsWithBaseHead).toHaveBeenCalledWith({
+		owner: baseContext.repo.owner,
+		repo: baseContext.repo.repo,
+		basehead: `${mockPushPayload.before}...${mockPushPayload.after}`,
+		per_page: 250,
+		page: 1,
+	});
+
+	expect(mockSetFailed).toHaveBeenCalledTimes(0);
+
+	expect(mockSetOutput).toHaveBeenCalledWith(
+		"all",
+		"dir/file2.txt removedFile.inc",
+	);
+	expect(mockSetOutput).toHaveBeenCalledWith("added", "");
+	expect(mockSetOutput).toHaveBeenCalledWith("modified", "");
+	expect(mockSetOutput).toHaveBeenCalledWith("removed", "removedFile.inc");
+	expect(mockSetOutput).toHaveBeenCalledWith("renamed", "dir/file2.txt");
+	expect(mockSetOutput).toHaveBeenCalledWith("added_modified", "");
+	expect(mockSetOutput).toHaveBeenCalledWith("deleted", "removedFile.inc");
+});
