@@ -63,17 +63,22 @@ export async function run(
 			head = "";
 		}
 
-		// Use GitHub's compare two commits API.
-		// https://developer.github.com/v3/repos/commits/#compare-two-commits
-		const response = await client.rest.repos.compareCommitsWithBasehead({
+		const comparePayload = {
 			owner: context.repo.owner,
 			repo: context.repo.repo,
-			basehead: `${base}..${head}`,
+			basehead: `${base}...${head}`,
 			// note - pagination bypasses the large commit limitation but still returns all files only on the first page per documentation
 			// eslint-disable-next-line @typescript-eslint/camelcase
 			per_page: 250,
-			page: 0,
-		});
+			page: 1,
+		};
+
+		core.debug(`Compare Payload ${JSON.stringify(comparePayload, null, 4)}`);
+
+		// Use GitHub's compare two commits API.
+		// https://developer.github.com/v3/repos/commits/#compare-two-commits
+		const response =
+			await client.rest.repos.compareCommitsWithBasehead(comparePayload);
 
 		// Ensure that the request was successful.
 		if (response.status !== 200) {
