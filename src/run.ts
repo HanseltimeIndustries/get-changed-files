@@ -1,7 +1,8 @@
 import * as core from "@actions/core";
 import type { context as _context, getOctokit } from "@actions/github";
+import micromatch from "micromatch";
 
-type Format = "space-delimited" | "csv" | "json";
+export type Format = "space-delimited" | "csv" | "json";
 type FileStatus = "added" | "modified" | "removed" | "renamed";
 
 interface MinUser {
@@ -19,13 +20,22 @@ interface MinHead {
 	user: MinUser;
 }
 
+export interface RunOptions {
+	format: Format;
+	/**
+	 * CSV string of minimatch globs
+	 */
+	filter?: string;
+}
+
 export async function run(
 	context: typeof _context,
 	client: ReturnType<typeof getOctokit>,
+	options: RunOptions,
 ): Promise<void> {
 	try {
 		// Create GitHub client with the API token.
-		const format = core.getInput("format", { required: true }) as Format;
+		const { format, filter } = options;
 
 		// Ensure that the format parameter is set properly.
 		if (format !== "space-delimited" && format !== "csv" && format !== "json") {
@@ -139,7 +149,17 @@ export async function run(
 		}
 
 		// Get the changed files from the response payload.
-		const files = response.data.files ?? [];
+		let files = response.data.files ?? [];
+		if (filter) {
+			const origCount = files.length;
+			// Allow whitespace
+			const normalizedFilters = filter.split(",").map((fil) => fil.trim());
+			core.info(`Filtering files to match ${filter}`);
+			files = files.filter((f) =>
+				micromatch.isMatch(f.filename, normalizedFilters),
+			);
+			core.info(`Filtered out ${origCount - files.length} files`);
+		}
 		const all = [] as string[],
 			added = [] as string[],
 			modified = [] as string[],

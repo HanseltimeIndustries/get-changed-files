@@ -20,6 +20,11 @@ inputs:
       Can be 'space-delimited', 'csv', or 'json'.
     required: true
     default: space-delimited
+  filter:
+    description: >
+      A csv string of minimatch globs that will filter out the file changes.
+      This is a short cut for returning changed files in a specific folder.
+    required: false
 outputs:
   all:
     description: >
