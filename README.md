@@ -33,7 +33,7 @@ See [action.yml](action.yml)
   - [Get all added and modified files as CSV](#get-all-added-and-modified-files-as-csv)
   - [Get all removed files as JSON](#get-all-removed-files-as-json)
 - [License](#license)
-- [Develpment](#develpment)
+- [Development](#development)
 
 ## Get all changed files as space-delimited
 
@@ -81,6 +81,6 @@ Consider using one of the other formats if that's the case.
 
 The scripts and documentation in this project are released under the [MIT License](LICENSE)
 
-# Develpment
+# Development
 
 [Development](./DEVELOPMENT.md)
