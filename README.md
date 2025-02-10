@@ -25,10 +25,21 @@ See [action.yml](action.yml)
     format: ''
 ```
 
+## Permissions
+
+Since this action uses the [Github Compare API](https://docs.github.com/en/rest/commits/commits?apiVersion=2022-11-28#compare-two-commits), you will
+need to have the minimum permissions for that API.
+
+```yaml
+permissions:
+  contents: read
+```
+
 # Scenarios
 
 - [Get All Changed Files](#get-all-changed-files)
 - [Usage](#usage)
+  - [Permissions](#permissions)
 - [Scenarios](#scenarios)
   - [Get all changed files as space-delimited](#get-all-changed-files-as-space-delimited)
   - [Get all added and modified files as CSV](#get-all-added-and-modified-files-as-csv)
