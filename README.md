@@ -1,8 +1,10 @@
-<p align="center">
-  <a href="https://github.com/jitterbit/get-changed-files/actions"><img alt="jitterbit/get-changed-files status" src="https://github.com/jitterbit/get-changed-files/workflows/Test/badge.svg"></a>
-</p>
+<!-- <p align="center">
+  <a href="https://github.com/hanseltimeindustries/get-changed-files/actions"><img alt="hanseltimeindustries/get-changed-files status" src="https://github.com/hanseltimeindustries/get-changed-files/workflows/Test/badge.svg"></a>
+</p> -->
 
 # Get All Changed Files
+
+(This is the spiritual successor to https://github.com/jitterbit/get-changed-files which is unmaintained)
 
 Get all of the files changed/modified in a pull request or push's commits.
 You can choose to get all changed files, only added files, only modified files, only removed files, only renamed files, or all added and modified files.
@@ -14,7 +16,7 @@ The `steps` output context exposes the output names `all`, `added`, `modified`, 
 See [action.yml](action.yml)
 
 ```yaml
-- uses: jitterbit/get-changed-files@v1
+- uses: hanseltimeindustries/get-changed-files@v1
   with:
     # Format of the steps output context.
     # Can be 'space-delimited', 'csv', or 'json'.
@@ -24,9 +26,14 @@ See [action.yml](action.yml)
 
 # Scenarios
 
-- [Get all changed files as space-delimited](#get-all-changed-files-as-space-delimited)
-- [Get all added and modified files as CSV](#get-all-added-and-modified-files-as-csv)
-- [Get all removed files as JSON](#get-all-removed-files-as-json)
+- [Get All Changed Files](#get-all-changed-files)
+- [Usage](#usage)
+- [Scenarios](#scenarios)
+  - [Get all changed files as space-delimited](#get-all-changed-files-as-space-delimited)
+  - [Get all added and modified files as CSV](#get-all-added-and-modified-files-as-csv)
+  - [Get all removed files as JSON](#get-all-removed-files-as-json)
+- [License](#license)
+- [Develpment](#develpment)
 
 ## Get all changed files as space-delimited
 
@@ -70,15 +77,10 @@ Consider using one of the other formats if that's the case.
     done
 ```
 
-# Install, Build, Lint, Test, and Package
-
-Make sure to do the following before checking in any code changes.
-
-```bash
-$ yarn
-$ yarn all
-```
-
 # License
 
 The scripts and documentation in this project are released under the [MIT License](LICENSE)
+
+# Develpment
+
+[Development](./DEVELOPMENT.md)
