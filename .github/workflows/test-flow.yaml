@@ -107,3 +107,21 @@ jobs:
           echo 'steps.files.outputs.removed=${{ steps.files.outputs.removed }}'
           echo 'steps.files.outputs.renamed=${{ steps.files.outputs.renamed }}'
           echo 'steps.files.outputs.added_modified=${{ steps.files.outputs.added_modified }}'
+
+  no-committed-bundle:
+    runs-on: ubuntu-latest
+    if: ${{ github.base_ref }}
+    steps:
+      - id: bundle-changed-files
+        name: Run the action
+        uses: hanseltimeindustries/get-changed-files@v1
+        with:
+          format: 'space-delimited'
+          filter: "bundle/**/*"
+
+      - name: No committed bundle
+        if: ${{ steps.bundle-changed-files.outputs.all }}
+        shell: bash
+        run: |
+          echo "all files in bundle/ directory are committed by the release process.  Please make sure not to commit your bundle files!"
+          exit 1
