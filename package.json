@@ -1,63 +1,56 @@
 {
-  "name": "get-changed-files",
-  "description": "GitHub action that gets all changed files in a pull request or push.",
-  "version": "1.0.0",
-  "private": true,
-  "author": "Jitterbit, Inc.",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jiterbit/get-changed-files.git"
-  },
-  "homepage": "https://github.com/jitterbit/get-changed-files#readme",
-  "bugs": {
-    "url": "https://github.com/jitterbit/get-changed-files/issues"
-  },
-  "keywords": [
-    "GitHub",
-    "Actions",
-    "TypeScript",
-    "JavaScript",
-    "Get",
-    "Changed",
-    "Modified",
-    "Diff",
-    "Files"
-  ],
-  "main": "lib/main.js",
-  "engines": {
-    "node": "^12.0.0"
-  },
-  "scripts": {
-    "build": "tsc",
-    "clean": "rimraf dist/**/* lib/**/*",
-    "format": "prettier --write **/*.ts",
-    "format:check": "prettier --check **/*.ts",
-    "lint": "eslint src/**/*.ts",
-    "package": "ncc build",
-    "test": "jest",
-    "all": "yarn clean && yarn build && yarn format && yarn lint && yarn package && yarn test"
-  },
-  "dependencies": {
-    "@actions/core": "^1.2.2",
-    "@actions/github": "^2.1.0"
-  },
-  "devDependencies": {
-    "@octokit/rest": "^16.40.2",
-    "@types/jest": "^25.1.1",
-    "@types/node": "^12.12.29",
-    "@typescript-eslint/parser": "^2.8.0",
-    "@zeit/ncc": "^0.21.0",
-    "eslint": "^6.8.0",
-    "eslint-plugin-github": "^3.4.0",
-    "eslint-plugin-jest": "^23.6.0",
-    "eslint-plugin-prettier": "^3.1.2",
-    "jest": "^25.1.0",
-    "jest-circus": "^25.1.0",
-    "js-yaml": "^3.13.1",
-    "prettier": "^1.19.1",
-    "rimraf": "^3.0.0",
-    "ts-jest": "^25.1.0",
-    "typescript": "^3.6.4"
-  }
+	"name": "get-changed-files",
+	"description": "GitHub action that gets all changed files in a pull request or push.",
+	"version": "1.0.0",
+	"private": true,
+	"author": "Jitterbit, Inc.",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jiterbit/get-changed-files.git"
+	},
+	"homepage": "https://github.com/jitterbit/get-changed-files#readme",
+	"bugs": {
+		"url": "https://github.com/jitterbit/get-changed-files/issues"
+	},
+	"keywords": [
+		"GitHub",
+		"Actions",
+		"TypeScript",
+		"JavaScript",
+		"Get",
+		"Changed",
+		"Modified",
+		"Diff",
+		"Files"
+	],
+	"main": "lib/main.js",
+	"engines": {
+		"node": "^22.0.0"
+	},
+	"scripts": {
+		"build": "tsc",
+		"clean": "rimraf dist/**/* lib/**/*",
+		"format": "biome format",
+		"lint": "biome lint",
+		"package": "ncc build",
+		"test": "jest",
+		"all": "yarn clean && yarn build && yarn format && yarn lint && yarn package && yarn test"
+	},
+	"dependencies": {
+		"@actions/core": "^1.11.1",
+		"@actions/github": "^6.0.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"@octokit/rest": "^21.1.0",
+		"@types/jest": "^29.5.14",
+		"@types/node": "^22.13.1",
+		"@zeit/ncc": "^0.21.0",
+		"jest": "^29.7.0",
+		"rimraf": "^3.0.0",
+		"ts-jest": "^29.2.5",
+		"typescript": "^5.7.3"
+	},
+	"packageManager": "yarn@4.6.0+sha512.5383cc12567a95f1d668fbe762dfe0075c595b4bfff433be478dbbe24e05251a8e8c3eb992a986667c1d53b6c3a9c85b8398c35a960587fbd9fa3a0915406728"
 }
