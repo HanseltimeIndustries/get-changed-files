@@ -30014,7 +30014,7 @@ exports.run = run;
 const core = __importStar(__nccwpck_require__(7484));
 function run(context, client) {
     return __awaiter(this, void 0, void 0, function* () {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c, _d, _e, _f;
         try {
             // Create GitHub client with the API token.
             const format = core.getInput("format", { required: true });
@@ -30030,10 +30030,28 @@ function run(context, client) {
             // Define the base and head commits to be extracted from the payload.
             let base;
             let head;
+            // Per the "in network" docs, this will add a username if it's a fork
+            let usernameModifier = "";
+            let ownerModifier = "";
             switch (eventName) {
                 case "pull_request":
-                    base = (_b = (_a = context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.base) === null || _b === void 0 ? void 0 : _b.sha;
-                    head = (_d = (_c = context.payload.pull_request) === null || _c === void 0 ? void 0 : _c.head) === null || _d === void 0 ? void 0 : _d.sha;
+                    {
+                        base = (_b = (_a = context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.base) === null || _b === void 0 ? void 0 : _b.ref;
+                        head = (_d = (_c = context.payload.pull_request) === null || _c === void 0 ? void 0 : _c.head) === null || _d === void 0 ? void 0 : _d.ref;
+                        const { head: headObj } = context.payload
+                            .pull_request;
+                        const headOwnerName = (_e = headObj.repo.owner.login) !== null && _e !== void 0 ? _e : headObj.repo.owner.name;
+                        if (!headOwnerName) {
+                            core.setFailed(`This action could not find the owner name of the head ${head}. ` +
+                                "Please submit an issue on this action's GitHub repo if you believe this in correct.");
+                            return;
+                        }
+                        if (headOwnerName.toLowerCase() !== context.repo.owner.toLowerCase() ||
+                            headObj.repo.name.toLowerCase() !== context.repo.repo.toLowerCase()) {
+                            usernameModifier = `${headOwnerName}:`;
+                            ownerModifier = `${context.repo.owner}:`;
+                        }
+                    }
                     break;
                 case "push":
                     base = context.payload.before;
@@ -30055,17 +30073,19 @@ function run(context, client) {
                 base = "";
                 head = "";
             }
-            // Use GitHub's compare two commits API.
-            // https://developer.github.com/v3/repos/commits/#compare-two-commits
-            const response = yield client.rest.repos.compareCommitsWithBasehead({
+            const comparePayload = {
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                basehead: `${base}..${head}`,
+                basehead: `${ownerModifier}${base}...${usernameModifier}${head}`,
                 // note - pagination bypasses the large commit limitation but still returns all files only on the first page per documentation
                 // eslint-disable-next-line @typescript-eslint/camelcase
                 per_page: 250,
-                page: 0,
-            });
+                page: 1,
+            };
+            core.debug(`Compare Payload ${JSON.stringify(comparePayload, null, 4)}`);
+            // Use GitHub's compare two commits API.
+            // https://developer.github.com/v3/repos/commits/#compare-two-commits
+            const response = yield client.rest.repos.compareCommitsWithBasehead(comparePayload);
             // Ensure that the request was successful.
             if (response.status !== 200) {
                 core.setFailed(`The GitHub API for comparing the base and head commits for this ${context.eventName} event returned ${response.status}, expected 200. ` +
@@ -30079,7 +30099,7 @@ function run(context, client) {
                 return;
             }
             // Get the changed files from the response payload.
-            const files = (_e = response.data.files) !== null && _e !== void 0 ? _e : [];
+            const files = (_f = response.data.files) !== null && _f !== void 0 ? _f : [];
             const all = [], added = [], modified = [], removed = [], renamed = [], addedModified = [];
             for (const file of files) {
                 const filename = file.filename;
