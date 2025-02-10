@@ -13,13 +13,13 @@ npm install
 Lint your project (we use eslint):
 
 ```shell
-npm run lint
+npm run lint -- --fix
 ```
 
 Format your project files (we use prettier):
 
 ```shell
-npm run format
+npm run format -- --fix
 ```
 
 Build your typescript files to .js:
