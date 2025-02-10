@@ -1,6 +1,6 @@
 name: Get All Changed Files
 description: Get all of the files changed/modified in a pull request or push's commits.
-author: Jitterbit, Inc.
+author: HanseltimeIndustries
 branding:
   icon: file
   color: purple
