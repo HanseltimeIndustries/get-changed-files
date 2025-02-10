@@ -26,9 +26,18 @@ const mockPullRequestPayload = {
 	pull_request: {
 		base: {
 			sha: "baseSha",
+			ref: "master",
 		},
 		head: {
 			sha: "headSha",
+			ref: "mything",
+			repo: {
+				owner: {
+					login: baseContext.repo.owner,
+					name: baseContext.repo.owner,
+				},
+				name: baseContext.repo.repo,
+			},
 		},
 	},
 };
@@ -305,22 +314,56 @@ it.each(
 			eachEntry.push([
 				format,
 				"pull_request",
+				false,
+				`${mockPullRequestPayload.pull_request.base.ref}...${mockPullRequestPayload.pull_request.head.ref}`,
 				mockPullRequestPayload,
 				expTransform,
 			]);
-			eachEntry.push([format, "push", mockPushPayload, expTransform]);
+			eachEntry.push([
+				format,
+				"pull_request",
+				true,
+				`${baseContext.repo.owner}:${mockPullRequestPayload.pull_request.base.ref}...differentUser:${mockPullRequestPayload.pull_request.head.ref}`,
+				{
+					...mockPullRequestPayload,
+					pull_request: {
+						...mockPullRequestPayload.pull_request,
+						head: {
+							...mockPullRequestPayload.pull_request.head,
+							repo: {
+								...mockPullRequestPayload.pull_request.head.repo,
+								owner: {
+									...mockPullRequestPayload.pull_request.head.repo.owner,
+									login: "differentUser",
+								},
+							},
+						},
+					},
+				},
+				expTransform,
+			]);
+			eachEntry.push([
+				format,
+				"push",
+				false,
+				`${mockPushPayload.before}...${mockPushPayload.after}`,
+				mockPushPayload,
+				expTransform,
+			]);
 			return eachEntry;
 		},
 		[] as [
 			string,
+			string,
+			boolean,
 			string,
 			{ [prop: string]: any },
 			(files: string[]) => string,
 		][],
 	),
 )(
-	"delivers the results for format %s",
-	async (format, eventName, payload, expTransform) => {
+	"delivers the results for format %s and event %s (forked: %s)",
+	async (format, eventName, _forked, expBasename, payload, expTransform) => {
 		mockGetInput.mockImplementation((token) => {
 			if (token === "token") {
 				return "someToken";
@@ -375,6 +418,14 @@ it.each(
 			} as any,
 			mockOctoKit as any,
 		);
+
+		expect(mockCompareCommitsWithBaseHead).toHaveBeenCalledWith({
+			owner: baseContext.repo.owner,
+			repo: baseContext.repo.repo,
+			basehead: expBasename,
+			per_page: 250,
+			page: 1,
+		});
 
 		expect(mockSetFailed).toHaveBeenCalledTimes(0);
 
