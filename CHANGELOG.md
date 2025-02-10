@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/HanseltimeIndustries/get-changed-files/compare/v1.0.0...v1.1.0) (2025-02-10)
+
+
+### Features
+
+* adding a filter option ([81e5075](https://github.com/HanseltimeIndustries/get-changed-files/commit/81e5075897cebcdf51ba84c625626ed67c2adaf6))
+
 # 1.0.0 (2025-02-10)
 
 
