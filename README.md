@@ -4,7 +4,8 @@
 
 # Get All Changed Files
 
-(This is the spiritual successor to https://github.com/jitterbit/get-changed-files which is unmaintained)
+(This is the spiritual successor to https://github.com/jitterbit/get-changed-files which is unmaintained.  This was resurrected to avoid the cost
+of other `git` cli based actions, since a misconfigured checkout means we could get different results)
 
 Get all of the files changed/modified in a pull request or push's commits.
 You can choose to get all changed files, only added files, only modified files, only removed files, only renamed files, or all added and modified files.
@@ -24,16 +25,27 @@ See [action.yml](action.yml)
     format: ''
 ```
 
+## Permissions
+
+Since this action uses the [Github Compare API](https://docs.github.com/en/rest/commits/commits?apiVersion=2022-11-28#compare-two-commits), you will
+need to have the minimum permissions for that API.
+
+```yaml
+permissions:
+  contents: read
+```
+
 # Scenarios
 
 - [Get All Changed Files](#get-all-changed-files)
 - [Usage](#usage)
+  - [Permissions](#permissions)
 - [Scenarios](#scenarios)
   - [Get all changed files as space-delimited](#get-all-changed-files-as-space-delimited)
   - [Get all added and modified files as CSV](#get-all-added-and-modified-files-as-csv)
   - [Get all removed files as JSON](#get-all-removed-files-as-json)
 - [License](#license)
-- [Develpment](#develpment)
+- [Development](#development)
 
 ## Get all changed files as space-delimited
 
@@ -81,6 +93,6 @@ Consider using one of the other formats if that's the case.
 
 The scripts and documentation in this project are released under the [MIT License](LICENSE)
 
-# Develpment
+# Development
 
 [Development](./DEVELOPMENT.md)

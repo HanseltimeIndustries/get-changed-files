@@ -4,6 +4,21 @@ import type { context as _context, getOctokit } from "@actions/github";
 type Format = "space-delimited" | "csv" | "json";
 type FileStatus = "added" | "modified" | "removed" | "renamed";
 
+interface MinUser {
+	login: string;
+	id: string;
+	name?: string;
+}
+
+interface MinHead {
+	ref: string;
+	repo: {
+		name: string;
+		owner: MinUser;
+	};
+	user: MinUser;
+}
+
 export async function run(
 	context: typeof _context,
 	client: ReturnType<typeof getOctokit>,
@@ -30,10 +45,35 @@ export async function run(
 		let base: string | undefined;
 		let head: string | undefined;
 
+		// Per the "in network" docs, this will add a username if it's a fork
+		let usernameModifier = "";
+		let ownerModifier = "";
 		switch (eventName) {
 			case "pull_request":
-				base = context.payload.pull_request?.base?.sha;
-				head = context.payload.pull_request?.head?.sha;
+				{
+					base = context.payload.pull_request?.base?.ref;
+					head = context.payload.pull_request?.head?.ref;
+					const { head: headObj } = context.payload
+						.pull_request! as unknown as {
+						head: MinHead;
+					};
+					const headOwnerName =
+						headObj.repo.owner.login ?? headObj.repo.owner.name;
+					if (!headOwnerName) {
+						core.setFailed(
+							`This action could not find the owner name of the head ${head}. ` +
+								"Please submit an issue on this action's GitHub repo if you believe this in correct.",
+						);
+						return;
+					}
+					if (
+						headOwnerName.toLowerCase() !== context.repo.owner.toLowerCase() ||
+						headObj.repo.name.toLowerCase() !== context.repo.repo.toLowerCase()
+					) {
+						usernameModifier = `${headOwnerName}:`;
+						ownerModifier = `${context.repo.owner}:`;
+					}
+				}
 				break;
 			case "push":
 				base = context.payload.before;
@@ -63,17 +103,22 @@ export async function run(
 			head = "";
 		}
 
-		// Use GitHub's compare two commits API.
-		// https://developer.github.com/v3/repos/commits/#compare-two-commits
-		const response = await client.rest.repos.compareCommitsWithBasehead({
+		const comparePayload = {
 			owner: context.repo.owner,
 			repo: context.repo.repo,
-			basehead: `${base}..${head}`,
+			basehead: `${ownerModifier}${base}...${usernameModifier}${head}`,
 			// note - pagination bypasses the large commit limitation but still returns all files only on the first page per documentation
 			// eslint-disable-next-line @typescript-eslint/camelcase
 			per_page: 250,
-			page: 0,
-		});
+			page: 1,
+		};
+
+		core.debug(`Compare Payload ${JSON.stringify(comparePayload, null, 4)}`);
+
+		// Use GitHub's compare two commits API.
+		// https://developer.github.com/v3/repos/commits/#compare-two-commits
+		const response =
+			await client.rest.repos.compareCommitsWithBasehead(comparePayload);
 
 		// Ensure that the request was successful.
 		if (response.status !== 200) {

@@ -10,13 +10,13 @@ Install your dependencies:
 npm install
 ```
 
-Lint your project (we use eslint):
+Lint your project (we use biome):
 
 ```shell
 npm run lint -- --fix
 ```
 
-Format your project files (we use prettier):
+Format your project files (we use biome):
 
 ```shell
 npm run format -- --fix
