@@ -6,7 +6,7 @@ branding:
   color: purple
 runs:
   using: node12
-  main: dist/index.js
+  main: bundle/index.js
 inputs:
   token:
     description: >
