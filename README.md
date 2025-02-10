@@ -4,7 +4,8 @@
 
 # Get All Changed Files
 
-(This is the spiritual successor to https://github.com/jitterbit/get-changed-files which is unmaintained)
+(This is the spiritual successor to https://github.com/jitterbit/get-changed-files which is unmaintained.  This was resurrected to avoid the cost
+of other `git` cli based actions, since a misconfigured checkout means we could get different results)
 
 Get all of the files changed/modified in a pull request or push's commits.
 You can choose to get all changed files, only added files, only modified files, only removed files, only renamed files, or all added and modified files.
