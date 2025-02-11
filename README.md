@@ -28,6 +28,7 @@ Additionally, this is the spiritual successor to https://github.com/jitterbit/ge
   - [Get all changed files as space-delimited](#get-all-changed-files-as-space-delimited)
   - [Get all added and modified files as CSV](#get-all-added-and-modified-files-as-csv)
   - [Get all removed files as JSON](#get-all-removed-files-as-json)
+  - [Check to see if disallowed files are in the commit](#check-to-see-if-disallowed-files-are-in-the-commit)
 - [License](#license)
 - [Development](#development)
 <!-- created with markdown all in one Vscode extension -->
@@ -118,6 +119,27 @@ Consider using one of the other formats if that's the case.
     for removed_file in ${removed_files[@]}; do
       echo "Do something with this ${removed_file}."
     done
+```
+
+## Check to see if disallowed files are in the commit
+
+This action uses semantic-release to bundle its code and then commit it onto the master branch.
+To avoid someone maliciously injecting some call into their bundle.js, we make use of this action
+to throw an error if there are changes in the `bundle/**` directory.
+
+```yaml
+      - id: bundle-changed-files
+        name: Run the action
+        uses: hanseltimeindustries/get-changed-files@v1
+        with:
+          format: 'space-delimited'
+          filter: "bundle/**/*"
+
+      - name: No committed bundle
+        if: ${{ steps.bundle-changed-files.outputs.all }}
+        run: |
+          echo "all files in bundle/ directory are committed by the release process.  Please make sure not to commit your bundle files!"
+          exit 1
 ```
 
 # License
