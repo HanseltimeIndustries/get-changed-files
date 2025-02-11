@@ -1,3 +1,11 @@
+## [1.1.1](https://github.com/HanseltimeIndustries/get-changed-files/compare/v1.1.0...v1.1.1) (2025-02-11)
+
+
+### Bug Fixes
+
+* rename to a unique name ([2b3ddd5](https://github.com/HanseltimeIndustries/get-changed-files/commit/2b3ddd58641ecaa1c515e01bb1751c1e86f9627f))
+* update the name of the action ([7526061](https://github.com/HanseltimeIndustries/get-changed-files/commit/75260618d7f8edbec4aff96be99387064e95e6ae))
+
 # [1.1.0](https://github.com/HanseltimeIndustries/get-changed-files/compare/v1.0.0...v1.1.0) (2025-02-10)
 
 
