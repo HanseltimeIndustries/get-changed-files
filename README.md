@@ -12,7 +12,7 @@ The `steps` output context exposes the output names `all`, `added`, `modified`, 
 
 ## What's different between other actions?
 
-This action is meant to not rely on a correctly configured `git` client (which is mainly what I found).  
+This action is meant to not rely on a correctly configured `git` client (which is mainly what I have found).  
 This action doesn't even require a `checkout` to run since it only uses github event context and the github compare API.  This also means that fork pull requests are also supported!
 
 Additionally, this is the spiritual successor to https://github.com/jitterbit/get-changed-files, which had the same aims but has not been kept up to date with APIS.  You can consider this a replacement for that action if you already liked it in your workflows.
