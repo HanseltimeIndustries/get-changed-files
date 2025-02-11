@@ -1,3 +1,11 @@
+## [1.1.2](https://github.com/HanseltimeIndustries/get-changed-files/compare/v1.1.1...v1.1.2) (2025-02-11)
+
+
+### Bug Fixes
+
+* bump the version once more due to release tooling bugs ([adc41c4](https://github.com/HanseltimeIndustries/get-changed-files/commit/adc41c4068cdfc3ab4a2d69f39f0e1d9b8ff8669))
+* bump version once more due to force issue ([eda2eae](https://github.com/HanseltimeIndustries/get-changed-files/commit/eda2eae41c023a85f1c46ed926ca1ded61e7cc0f))
+
 ## [1.1.1](https://github.com/HanseltimeIndustries/get-changed-files/compare/v1.1.0...v1.1.1) (2025-02-11)
 
 

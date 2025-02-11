@@ -1,7 +1,7 @@
 {
 	"name": "get-changed-files",
 	"description": "GitHub action that gets all changed files in a pull request or push.",
-	"version": "1.1.1",
+	"version": "1.1.2",
 	"private": true,
 	"author": "hanseltime",
 	"license": "MIT",
