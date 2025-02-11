@@ -1,4 +1,4 @@
-name: Get All Changed Files
+name: Get Changed Files
 description: Get all of the files changed/modified in a pull request or push's commits.
 author: HanseltimeIndustries
 branding:
