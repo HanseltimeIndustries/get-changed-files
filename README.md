@@ -65,7 +65,7 @@ This argument will filter the output of files to only those that match the set o
 
 Example:  `sites/**/*,bundle/**/*`
 
-The above configuration is only returning changed files in the `sites/` and `bundle/` folder.
+The above configuration will only return changed files in the `sites/` and `bundle/` folder.
 
 ## Permissions
 
