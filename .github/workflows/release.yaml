@@ -4,13 +4,14 @@ run-name: ${{ github.ref_name }} Release
 on:
   push:
     branches:
-      - master
+      - main
       - alpha
 
 jobs:
   call-test-workflow:
     permissions:
-      contents: read
+      contents: write
+      pull-requests: write
     uses: ./.github/workflows/test-flow.yaml
     with:
       from: ${{ github.workflow }}

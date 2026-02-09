@@ -94,5 +94,9 @@ can perform direct actions on release branches.
   - main - for actual release
   - alpha - for alpha channel release
 - Add a "bypass exception" for the application that you just specified in the workflow file
-- Ensure status checks are done
+- Ensure status checks are required
+  - You will have to run your statuses once to add them
+  - At the very least, you will want to add:
+    - no-committed-bundle
+    - ci-checks
 - Add additional checks that you would like
