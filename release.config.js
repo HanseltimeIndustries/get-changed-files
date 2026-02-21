@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const { readFileSync } = require("fs");
 const { join } = require("path");
 
@@ -14,7 +13,7 @@ const abbreviatedName = fullName.substring(
 );
 
 module.exports = {
-	branches: ["master", { name: "alpha", prerelease: true }],
+	branches: ["main", { name: "alpha", prerelease: true }],
 	plugins: [
 		"@semantic-release/commit-analyzer",
 		"@semantic-release/release-notes-generator",
@@ -24,6 +23,13 @@ module.exports = {
 			"@semantic-release/exec",
 			{
 				prepareCmd: "npm run bundle",
+			},
+		],
+		// format any changed files
+		[
+			"@semantic-release/exec",
+			{
+				prepareCmd: "npm run format -- --fix",
 			},
 		],
 		[
