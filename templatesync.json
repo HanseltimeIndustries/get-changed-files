@@ -1,5 +1,9 @@
 {
-	"ignore": ["src/**/*", "README.md", "action.yml"],
+	"ignore": [
+		"src/**/*",
+		"README.md",
+		"action.yml"
+	],
 	"merge": {
 		".json": {
 			"rules": [
@@ -7,8 +11,14 @@
 					"glob": "package.json",
 					"options": {
 						"paths": [
-							["$.devDependencies", "merge-template"],
-							["$.scripts", "merge-template"]
+							[
+								"$.devDependencies",
+								"merge-template"
+							],
+							[
+								"$.scripts",
+								"merge-template"
+							]
 						]
 					}
 				},

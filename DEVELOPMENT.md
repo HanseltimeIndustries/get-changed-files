@@ -10,13 +10,13 @@ Install your dependencies:
 npm install
 ```
 
-Lint your project (we use biome):
+Lint your project (we use [biome)](https://biomejs.dev/guides/getting-started/)):
 
 ```shell
 npm run lint -- --fix
 ```
 
-Format your project files (we use biome):
+Format your project files (we use [biome](https://biomejs.dev/guides/getting-started/)):
 
 ```shell
 npm run format -- --fix
